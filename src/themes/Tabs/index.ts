@@ -20,7 +20,7 @@ const TabsTheme = {
           '&:not(.Mui-selected)': {
             color: '#747474'
           },
-          '&:not(:first-child)': {
+          '&:not(:first-of-type)': {
             marginLeft: '16px'
           }
         }
