@@ -3,13 +3,9 @@ import React from 'react'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box';
+import Box from '@mui/material/Box'
 
-interface TabPanelProps {
-  children?: React.ReactNode
-  index: number
-  value: number
-}
+import { TabPanelProps } from './types'
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props
@@ -22,11 +18,7 @@ function TabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Typography>{children}</Typography>}
     </div>
   )
 }
@@ -59,13 +51,13 @@ export default function TabsGroup() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        Item One
+        Fox One
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        Fox Two
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        Fox Three
       </TabPanel>
     </Box>
   )
