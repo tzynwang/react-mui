@@ -5,16 +5,13 @@ import InputDemo from './../common/Input'
 import CheckBoxDemo from './../common/CheckBox'
 import TabsGroup from './../common/Tabs'
 
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 
 function App(): React.ReactElement {
   return (
-    <div className="App">
-      <Stack
-        spacing={2}
-        direction="row"
-        sx={{ margin: '1rem 0' }}
-      >
+    <Box className="App" sx={{ p: 3 }}>
+      <Stack spacing={2} direction="row" sx={{ margin: '1rem 0' }}>
         <ButtonDemo />
       </Stack>
       <Stack direction="row" sx={{ margin: '1rem 0' }}>
@@ -24,7 +21,7 @@ function App(): React.ReactElement {
         <CheckBoxDemo />
       </Stack>
       <TabsGroup />
-    </div>
+    </Box>
   )
 }
 
