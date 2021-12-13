@@ -3,6 +3,7 @@ import React from 'react'
 import ButtonDemo from './../common/Button'
 import InputDemo from './../common/Input'
 import CheckBoxDemo from './../common/CheckBox'
+import TabsGroup from './../common/Tabs'
 
 import Stack from '@mui/material/Stack'
 
@@ -22,6 +23,7 @@ function App(): React.ReactElement {
       <Stack direction="row" sx={{ margin: '1rem 0' }}>
         <CheckBoxDemo />
       </Stack>
+      <TabsGroup />
     </div>
   )
 }
