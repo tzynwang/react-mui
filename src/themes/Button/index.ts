@@ -7,7 +7,7 @@ const ButtonTheme = {
           fontWeight: 'bold',
           fontSize: '16px',
           lineHeight: '24px',
-          '&:disabled': {
+          '&.Mui-disabled': {
             backgroundColor: '#bdbdbd',
             color: '#fff'
           }
