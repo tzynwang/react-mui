@@ -1,64 +1,53 @@
-import React from 'react'
+import React, { useMemo } from "react";
 
-import Tabs from '@mui/material/Tabs'
-import Tab from '@mui/material/Tab'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
+import Box from "@mui/material/Box";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
 
-import { TabPanelProps } from './types'
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Typography>{children}</Typography>}
-    </div>
-  )
-}
-
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`
-  }
+enum FOX {
+  SAKHALIN = "Sakhalin",
+  TIBETAN = "Tibetan",
+  SILVER = "Silver",
 }
 
 export default function TabsGroup() {
-  const [value, setValue] = React.useState(0)
+  // states
+  const [tabsValue, setTabsValue] = React.useState<string>(FOX.SAKHALIN);
+  const tabsBody = useMemo(() => {
+    switch (tabsValue) {
+      case "Sakhalin":
+        return "北狐";
+      case "Tibetan":
+        return "藏狐";
+      case "Silver":
+        return "銀狐";
+      default:
+        return "🦊";
+    }
+  }, [tabsValue]);
 
-  const handleChange = (e: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue)
-  }
+  // functions
+  const handleChange = (e: React.SyntheticEvent, newValue: string) => {
+    setTabsValue(newValue);
+  };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+    <Box sx={{ width: "100%" }}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
-          value={value}
+          value={tabsValue}
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="一隻狐" {...a11yProps(0)} />
-          <Tab label="兩隻狐" {...a11yProps(1)} />
-          <Tab label="三隻狐" {...a11yProps(2)} />
+          <Tab label={FOX.SAKHALIN} value={FOX.SAKHALIN} />
+          <Tab label={FOX.TIBETAN} value={FOX.TIBETAN} />
+          <Tab label={FOX.SILVER} value={FOX.SILVER} />
         </Tabs>
       </Box>
-      <TabPanel value={value} index={0}>
-        Fox One
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        Fox Two
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Fox Three
-      </TabPanel>
+      <Typography variant="h3" component="div" sx={{ padding: "1rem" }}>
+        {tabsBody}
+      </Typography>
     </Box>
-  )
+  );
 }
