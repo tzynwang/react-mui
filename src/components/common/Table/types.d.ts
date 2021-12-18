@@ -1,5 +1,15 @@
-import { User } from "./../../../models/GeneralTypes";
-
 export interface FunctionalTableProps {
-  userList: User[];
+  tableHead: UserForTableHeader;
+  tableContentList: UserForTable[];
 }
+
+export interface UserForTable {
+  Id: string;
+  Gender: string;
+  Name: string;
+  Email: string;
+  Age: number;
+  Country: string;
+}
+
+export type UserForTableHeader = (keyof UserForTable)[];

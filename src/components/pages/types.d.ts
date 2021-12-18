@@ -1,4 +1,4 @@
-import { Gender, User } from "./../../models/GeneralTypes";
+import { Gender, User, UserForTable, UserForTableHeader } from "./../../models/GeneralTypes";
 
 export interface FetchUserListRes {
   results: User[];
@@ -10,4 +10,4 @@ export interface FetchUserListRes {
   };
 }
 
-export { Gender, User };
+export { Gender, User, UserForTable, UserForTableHeader };

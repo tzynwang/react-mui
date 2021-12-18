@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios, { AxiosResponse } from "axios";
 
 import ButtonDemo from "./../common/Button";
@@ -11,22 +11,49 @@ import TableDemo from "./../common/Table";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 
-import { Gender, User, FetchUserListRes } from "./types";
+import {
+  Gender,
+  User,
+  FetchUserListRes,
+  UserForTable,
+  UserForTableHeader,
+} from "./types";
 
 const TABS: Gender[] = ["female", "male"];
 const START_PAGE = 0;
 const PER_PAGE = 10;
 const TOTAL_COUNTS = 50;
 
+const TABLE_HEAD = [
+  "Gender",
+  "Name",
+  "Email",
+  "Age",
+  "Country",
+] as UserForTableHeader;
+
 function App(): React.ReactElement {
   // states
   const [currentTab, setCurrentTab] = useState<Gender>("female");
   const [userList, setUserList] = useState<User[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(START_PAGE);
+  const userListForTable: UserForTable[] = useMemo(
+    () =>
+      userList.map((user) => ({
+        Id: user.login.uuid,
+        Gender: user.gender,
+        Name: `${user.name.first} ${user.name.last}`,
+        Email: user.email,
+        Age: user.dob.age,
+        Country: user.location.country,
+      })),
+    [userList]
+  );
 
   // functions
   const handleTabChange = (e: React.SyntheticEvent, newValue: Gender) => {
     setCurrentTab(newValue);
+    setCurrentPage(START_PAGE);
   };
   const handlePageChange = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
@@ -79,7 +106,7 @@ function App(): React.ReactElement {
           rowsPerPage={PER_PAGE}
         />
       </Box>
-      <TableDemo userList={userList} />
+      <TableDemo tableHead={TABLE_HEAD} tableContentList={userListForTable} />
     </Box>
   );
 }
