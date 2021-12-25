@@ -1,87 +1,134 @@
-import React, { useState, useEffect } from "react";
-import axios, { AxiosResponse } from "axios";
+import React, { useState, useEffect } from 'react'
+import axios, { AxiosResponse } from 'axios'
+import { debounce } from 'lodash'
 
-import ButtonDemo from "./../common/Button";
-import InputDemo from "./../common/Input";
-import CheckBoxDemo from "./../common/CheckBox";
-import TableTabsDemo from "./../common/Tabs/TableTabs";
-import TablePaginationDemo from "./../common/Pagination";
-import TableDemo from "./../common/Table";
+import InputDemo from './../common/Input'
+import RadioBtnDemo from './../common/Radio'
+import TableTabsDemo from './../common/Tabs/TableTabs'
+import TableDemo from './../common/Table'
 
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
+import Stack from '@mui/material/Stack'
+import Box from '@mui/material/Box'
 
-import { Gender, User, FetchUserListRes } from "./types";
+import { Gender, User, FetchUserListRes, QueryCondition } from './types'
 
-const TABS: Gender[] = ["female", "male"];
-const START_PAGE = 0;
-const PER_PAGE = 10;
-const TOTAL_COUNTS = 50;
+enum KEY {
+  ENTER = 'Enter'
+}
+
+const TABS: Gender[] = ['female', 'male']
+const DEFAULT_PAGE = 5
+const DATA_PER_PAGE = [5, 7, 10]
+const CONDITION: QueryCondition = {
+  global: {
+    results: DEFAULT_PAGE,
+    gender: TABS[0],
+    nat: ''
+  },
+  local: {
+    nat: ''
+  }
+}
 
 function App(): React.ReactElement {
   // states
-  const [currentTab, setCurrentTab] = useState<Gender>("female");
-  const [userList, setUserList] = useState<User[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(START_PAGE);
+  const [userList, setUserList] = useState<User[]>([])
+  const [queryCondition, setQueryCondition] =
+    useState<QueryCondition>(CONDITION)
 
   // functions
   const handleTabChange = (e: React.SyntheticEvent, newValue: Gender) => {
-    setCurrentTab(newValue);
-  };
-  const handlePageChange = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
-    page: number
+    setQueryCondition((prev) => ({
+      ...prev,
+      global: {
+        results: prev.global.results,
+        gender: newValue,
+        nat: prev.global.nat
+      }
+    }))
+  }
+  const handleDataPerPageChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    value: string
   ) => {
-    setCurrentPage(page);
-  };
+    setQueryCondition((prev) => ({
+      ...prev,
+      global: {
+        results: +value,
+        gender: prev.global.gender,
+        nat: prev.global.nat
+      }
+    }))
+  }
+  const handleUserInput = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
+    setQueryCondition((prev) => ({
+      ...prev,
+      local: { nat: e.target.value }
+    }))
+  }
+  const handleKeyDownEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === KEY.ENTER) {
+      handleSearch()
+    }
+  }
+  const handleSearch = () => {
+    setQueryCondition((prev) => ({
+      ...prev,
+      global: {
+        results: prev.global.results,
+        gender: prev.global.gender,
+        nat: queryCondition.local.nat
+      }
+    }))
+  }
+  const debouncedHandleSearch = debounce(handleSearch, 400)
 
   // hooks
   useEffect(() => {
     async function fetchUser() {
+      const params = { ...queryCondition.global }
       const res = await axios.get<undefined, AxiosResponse<FetchUserListRes>>(
-        `https://randomuser.me/api/?gender=${currentTab}&results=${PER_PAGE}&page=${
-          currentPage + 1
-        }`
-      );
-      setUserList(res.data.results);
+        'https://randomuser.me/api/',
+        { params }
+      )
+      setUserList(res.data.results)
     }
-    fetchUser();
-  }, [currentTab, currentPage]);
+    fetchUser()
+  }, [queryCondition.global])
 
   return (
     <Box className="App" sx={{ p: 3 }}>
-      <Stack spacing={2} direction="row" sx={{ margin: "1rem 0" }}>
-        <ButtonDemo />
-      </Stack>
-      <Stack direction="row" sx={{ margin: "1rem 0" }}>
-        <InputDemo />
-      </Stack>
-      <Stack direction="row" sx={{ margin: "1rem 0" }}>
-        <CheckBoxDemo />
+      <InputDemo
+        handleUserInput={handleUserInput}
+        handleSearch={debouncedHandleSearch}
+        handleKeyDownEnter={handleKeyDownEnter}
+      />
+      <Stack sx={{ margin: '1rem auto' }}>
+        <RadioBtnDemo
+          dataPerPage={queryCondition.global.results}
+          dataPerPageArr={DATA_PER_PAGE}
+          handleDataPerPageChange={handleDataPerPageChange}
+        />
       </Stack>
 
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
         }}
       >
         <TableTabsDemo
           tabContent={TABS}
-          currentTab={currentTab}
+          currentTab={queryCondition.global.gender}
           handleTabChange={handleTabChange}
-        />
-        <TablePaginationDemo
-          count={TOTAL_COUNTS}
-          page={currentPage}
-          handlePageChange={handlePageChange}
-          rowsPerPage={PER_PAGE}
         />
       </Box>
       <TableDemo userList={userList} />
     </Box>
-  );
+  )
 }
 
-export default App;
+export default App

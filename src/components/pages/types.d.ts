@@ -1,13 +1,24 @@
-import { Gender, User } from "./../../models/GeneralTypes";
+import { Gender, User } from './../../models/GeneralTypes'
 
 export interface FetchUserListRes {
-  results: User[];
+  results: User[]
   info: {
-    seed: string;
-    results: number;
-    page: number;
-    version: string;
-  };
+    seed: string
+    results: number
+    page: number
+    version: string
+  }
 }
 
-export { Gender, User };
+export interface QueryCondition {
+  global: {
+    results: number
+    gender: Gender
+    nat: string
+  }
+  local: {
+    nat: string
+  }
+}
+
+export { Gender, User }
